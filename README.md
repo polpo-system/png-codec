@@ -14,9 +14,10 @@ The repository has two more packages for the desktop:
 
 - png: PNG and RGBPictures. `png = PNG.InitPicture` in the section PictureConverters of
   Oberon.Text makes Pictures.Open read .png files: the pictures of WebNav and of every program on
-  Pictures. Pictures have at most 256 colours: RGBPictures gives a picture with no more colours
-  exactly its own, a grey picture 256 greys, any other the 216 colours of a 6 x 6 x 6 cube with
-  Floyd-Steinberg dithering; transparent pixels are blended over PNG.background (white).
+  Pictures. Pictures are drawn with the 256 colours of the palette of Display (their own palette
+  is not used, as with GIF and JPEG): RGBPictures gives each pixel the nearest of these colours,
+  directly for a picture of at most 256 colours, with Floyd-Steinberg dithering for others;
+  transparent pixels are blended over PNG.background (white).
   PNG.Store writes a Picture as a PNG file.
 - images-png: PNGImages. `png = PNGImages.Install` in ImageFormats makes Images.Load and
   Images.Store read and write .png files: pictures with alpha as BGRA8888 (alpha premultiplied,
@@ -68,8 +69,8 @@ ZlibInflate.Uncompress, which calls Inflate once with Finish, stops on valid str
                                  their CRC-32 with the list, then encoded and decoded again; each
                                  of the 14 damaged ones refused with the expected result
 
-    PNGPicturesTest.Run          2 checks: Pictures.Open of an RGB and a palette picture, the
-                                 colours of the palette exact
+    PNGPicturesTest.Run          2 checks: Pictures.Open of an RGB and a palette picture, their
+                                 colours near those of PNG0 (averaged over blocks of 4 by 4)
     PNGImagesTest.Run            4 checks: Images.Load of an RGB and an RGBA picture (the pixels
                                  of PNG0), Images.Store written and read again
 
