@@ -48,21 +48,16 @@ BEGIN
   RETURN TRUE
 END SameImage;
 
-(* the opaque pixels of a and b equal, within 2 (one condition at a time: the ARMv7 compiler
-  stopped at ASSERT 61 in AOPC.Index on A & (B OR C OR D) of open array elements in a loop) *)
+(* the opaque pixels of a and b equal, within 2 *)
 PROCEDURE SameOpaque(a, b: PNG0.Image): BOOLEAN;
-VAR i, n, k, d: LONGINT;
+VAR i, n: LONGINT;
 BEGIN
   IF (a = NIL) OR (b = NIL) OR (a.width # b.width) OR (a.height # b.height) THEN RETURN FALSE END;
   i := 0; n := a.width * a.height;
   WHILE i < n DO
-    IF a.pix[4 * i + 3] = 0FFX THEN
-      k := 0;
-      WHILE k < 3 DO
-        d := ORD(a.pix[4 * i + k]) - ORD(b.pix[4 * i + k]);
-        IF ABS(d) > 2 THEN RETURN FALSE END;
-        INC(k)
-      END
+    IF (a.pix[4 * i + 3] = 0FFX) & ((ABS(ORD(a.pix[4 * i]) - ORD(b.pix[4 * i])) > 2) OR
+      (ABS(ORD(a.pix[4 * i + 1]) - ORD(b.pix[4 * i + 1])) > 2) OR (ABS(ORD(a.pix[4 * i + 2]) - ORD(b.pix[4 * i + 2])) > 2)) THEN
+      RETURN FALSE
     END;
     INC(i)
   END;
