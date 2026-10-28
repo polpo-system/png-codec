@@ -51,8 +51,9 @@ to 64 million pixels (MaxPixels).
 
 PNG0 was written for polpo after the PNG 1.2 specification and the decoders of TF
 (AosPNGImages of Bluebottle, back-ported to Oberon System 3 as PNG.Mod). It inflates the picture
-data with ZlibInflate called in a loop on pieces of 4096 bytes, as ZlibReaders does:
-ZlibInflate.Uncompress, which calls Inflate once with Finish, stops on valid streams.
+data with ZlibInflate called in a loop on pieces of 4096 bytes, as ZlibReaders does; in polpo 1.4.0
+and before, ZlibInflate.Uncompress, which calls Inflate once with Finish, stopped after 32 KB of
+output.
 
 ## What is here
 
@@ -83,7 +84,8 @@ png-codec` runs the test after unpacking `test/PngSuite-2017jul19.tgz`.
 The tests found a bug in the zlib of polpo: Zlib.Adler32 summed up to 5552 bytes before reducing
 its sums, the bound zlib has for unsigned 32-bit numbers; Oberon's LONGINT is signed, and on long
 runs of high bytes the sum wrapped, so valid streams were refused and streams written had a
-wrong checksum. polpo after 1.4.0 has the fix (3854 bytes).
+wrong checksum. polpo after 1.4.0 has the fix (3854 bytes), and also a ZlibInflate.Uncompress and a
+ZlibDeflate.Compress at level 0 that work on large data.
 
 ## License
 

@@ -174,9 +174,8 @@ BEGIN
 END Scale;
 
 (* inflate the zlib stream src[0..srcLen) into dst[0..dstLen); done the bytes produced.
-  ZlibInflate.Uncompress (one Inflate with Finish) and Inflate given the whole stream at once
-  stop on some valid streams (data error or buffer error); given 4096 bytes at a time, as
-  ZlibReaders does, Inflate reads them *)
+  Inflate is given 4096 bytes at a time, as ZlibReaders does: in polpo 1.4.0 and before, a single
+  Inflate with Finish (ZlibInflate.Uncompress) stopped after 32 KB of output *)
 PROCEDURE Inflate(VAR src: ARRAY OF CHAR; srcLen: LONGINT; VAR dst: ARRAY OF CHAR; dstLen: LONGINT; VAR done: LONGINT): BOOLEAN;
 CONST Piece = 4096;
 VAR s: ZlibInflate.Stream; in: ARRAY Piece OF CHAR; pos, n, i, outBefore: LONGINT;
