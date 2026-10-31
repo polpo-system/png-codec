@@ -41,6 +41,9 @@ In a program:
     PNG0.Encode(W, img, level, res)  8-bit RGB, or RGBA if img.alpha
     PNG0.ReadInfo(R, info, res)      the header only
     PNG0.NewImage(w, h)              an image to fill and encode
+    PNG0.DecodeBytes(data, n, limit, img, res)    the picture in data[0..n-1], at most limit pixels
+    PNG0.EncodeBytes(img, level, max, data, n, res)  into data[0..n-1], at most max bytes
+    PNG0.ReadInfoBytes(data, n, info, res)        the header of the picture in data
 
 Decode reads every kind of PNG picture: grey, grey with alpha, RGB, RGB with alpha and palette
 pictures, with 1, 2, 4, 8 or 16 bits per sample (16 are reduced to 8), interlaced or not, with
@@ -48,6 +51,14 @@ the transparency of a tRNS chunk. It checks the CRC of every chunk and refuses u
 chunks; ancillary chunks (gamma, text, time and so on) are skipped. Encode chooses for each row
 the filter that gives the smallest sum of its bytes taken as signed numbers. Pictures may have up
 to 64 million pixels (MaxPixels).
+
+The entry points ending in Bytes work in memory, on the files of Files.NewMemory and Files.FromBytes,
+and write no file. DecodeBytes refuses a picture of more than limit pixels (1 to MaxPixels) with
+tooLarge before it takes memory for the pixels; EncodeBytes gives tooLarge, data NIL and n 0 when the
+picture needs more than max bytes, and on success only data[0..n-1] holds it. Decode and Encode also
+refuse a picture whose width and height do not fit MaxPixels, or whose pix is smaller than they say.
+These versions need a polpo whose Files has NewMemory and whose compilers take HUGEINT (after polpo
+1.4.0).
 
 PNG0 was written for polpo after the PNG 1.2 specification and the decoders of TF
 (AosPNGImages of Bluebottle, back-ported to Oberon System 3 as PNG.Mod). It inflates the picture
@@ -61,6 +72,7 @@ output.
     desktop/PNG.Mod, desktop/RGBPictures.Mod          package png
     desktop/PNGImages.Mod                             package images-png
     test/PNGTest.Mod, pngsuite.list, PngSuite-2017jul19.tgz
+    test/PNGMemoryTest.Mod
     test/PNGPicturesTest.Mod, test/PNGImagesTest.Mod  (they need the desktop's display)
 
 ## Tests
@@ -69,6 +81,14 @@ output.
                                  each of the 162 valid pictures decoded, its pixels compared by
                                  their CRC-32 with the list, then encoded and decoded again; each
                                  of the 14 damaged ones refused with the expected result
+
+    PNGMemoryTest.Run            19 checks: a picture of 256 by 192 with alpha encoded into memory
+                                 and decoded again, the same bytes as through a rider; the pixel
+                                 limit, the limit of the output, and data cut short, damaged or too
+                                 large refused
+    PNGMemoryTest.Fixtures pngsuite.list
+                                 1206 checks: each picture of the list read with ReadInfoBytes and
+                                 DecodeBytes and through a rider, the same results and pixels
 
     PNGPicturesTest.Run          2 checks: Pictures.Open of an RGB and a palette picture, their
                                  colours near those of PNG0 (averaged over blocks of 4 by 4)
