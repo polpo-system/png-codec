@@ -1,7 +1,5 @@
 MODULE PNG0;  (** PNG pictures: decoding and encoding, on Files and the zlib of ETH Oberon *)
 
-(* VOC adaptation, 2026-10-31: bounded memory-file entry points and buffer validation. *)
-
 (** PNG 1.2 (ISO/IEC 15948): Decode reads every kind of PNG picture (grey, grey with alpha,
   RGB, RGB with alpha, palette; 1, 2, 4, 8 and 16 bits per sample; interlaced or not; with a
   tRNS chunk) into an Image of 8-bit red, green, blue and alpha; Encode writes an Image as an
@@ -371,7 +369,7 @@ PROCEDURE Decode*(VAR R: Files.Rider; VAR img: Image; VAR res: LONGINT);
 BEGIN DecodeLimited(R, MaxPixels, img, res) END Decode;
 
 (** inspect the logical prefix data[0..length), entirely in memory *)
-PROCEDURE ReadInfoBytes*(data: ARRAY OF CHAR; length: LONGINT; VAR info: Info; VAR res: LONGINT);
+PROCEDURE ReadInfoBytes*(VAR data: ARRAY OF CHAR; length: LONGINT; VAR info: Info; VAR res: LONGINT);
 VAR f: Files.File; R: Files.Rider;
 BEGIN
   f := Files.FromBytes(data, length);
@@ -381,7 +379,7 @@ END ReadInfoBytes;
 
 (** decode an in-memory prefix, enforcing pixelLimit before allocating pixels or scanlines;
     pixelLimit must be in 1..MaxPixels. No temporary files are created. *)
-PROCEDURE DecodeBytes*(data: ARRAY OF CHAR; length, pixelLimit: LONGINT; VAR img: Image; VAR res: LONGINT);
+PROCEDURE DecodeBytes*(VAR data: ARRAY OF CHAR; length, pixelLimit: LONGINT; VAR img: Image; VAR res: LONGINT);
 VAR f: Files.File; R: Files.Rider;
 BEGIN
   img := NIL;
