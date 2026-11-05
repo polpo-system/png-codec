@@ -4,14 +4,14 @@ MODULE PNGImagesTest;  (* loksh PNGImagesTest.Run: PNG pictures through Images; 
   alpha). Images.Load gives the pixels of PNG0 (alpha premultiplied); Images.Store writes them back,
   read again by PNG0 with the same colours where they are opaque. *)
 
-IMPORT Files, Images, out, PNG0;
+IMPORT Files, Images, Out, PNG0;
 
 VAR checks, failed: LONGINT;
 
 PROCEDURE Check(what: ARRAY OF CHAR; ok: BOOLEAN);
 BEGIN
   INC(checks);
-  IF ~ok THEN INC(failed); out.String("FAIL "); out.String(what); out.Ln END
+  IF ~ok THEN INC(failed); Out.String("FAIL "); Out.String(what); Out.Ln END
 END Check;
 
 PROCEDURE Decode(name: ARRAY OF CHAR): PNG0.Image;
@@ -80,7 +80,7 @@ PROCEDURE Run*;
 BEGIN
   checks := 0; failed := 0;
   ImagesCase("basn2c08.png"); ImagesCase("basn6a08.png");
-  out.String("PNGImagesTest: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("PNGImagesTest: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 END PNGImagesTest.

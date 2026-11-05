@@ -10,7 +10,7 @@ MODULE PNGTest;  (* loksh PNGTest.Run pngsuite.list: PNG0 on the pictures of Png
   PNGTest.Write names pngsuite.list writes the list for the pictures named in the file names (one
   a line) as PNG0 decodes them now. *)
 
-IMPORT Files, Texts, out, Zlib, PNG0;
+IMPORT Files, Texts, Out, Zlib, PNG0;
 
 CONST Max = 128;
 
@@ -18,8 +18,8 @@ VAR checks, failed: LONGINT;
 
 PROCEDURE Fail(VAR name: ARRAY OF CHAR; what: ARRAY OF CHAR; x: LONGINT);
 BEGIN
-  INC(failed); out.String("FAIL "); out.String(name); out.String(": "); out.String(what); out.String(" ");
-  out.Int(x, 0); out.Ln
+  INC(failed); Out.String("FAIL "); Out.String(name); Out.String(": "); Out.String(what); Out.String(" ");
+  Out.Int(x, 0); Out.Ln
 END Fail;
 
 PROCEDURE Decode(VAR name: ARRAY OF CHAR; VAR img: PNG0.Image; VAR res: LONGINT);
@@ -101,12 +101,12 @@ PROCEDURE Run*;
 VAR A: Texts.Reader; name: ARRAY Max OF CHAR; line: ARRAY 256 OF CHAR; f: Files.File; R: Files.Rider;
 BEGIN
   Texts.OpenArgs(A);
-  IF ~Texts.Arg(A, name) THEN out.String("usage: PNGTest.Run pngsuite.list"); out.Ln; RETURN END;
+  IF ~Texts.Arg(A, name) THEN Out.String("usage: PNGTest.Run pngsuite.list"); Out.Ln; RETURN END;
   f := Files.Old(name);
-  IF f = NIL THEN out.String("FAIL no "); out.String(name); out.Ln; RETURN END;
+  IF f = NIL THEN Out.String("FAIL no "); Out.String(name); Out.Ln; RETURN END;
   checks := 0; failed := 0; Files.Set(R, f, 0);
   WHILE Line(R, line) DO Case(line) END;
-  out.String("PNGTest: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("PNGTest: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 PROCEDURE PutInt(VAR W: Files.Rider; x: LONGINT);
@@ -123,9 +123,9 @@ VAR A: Texts.Reader; names, list: ARRAY Max OF CHAR; name: ARRAY 256 OF CHAR; f,
   img: PNG0.Image; res, i: LONGINT;
 BEGIN
   Texts.OpenArgs(A);
-  IF ~Texts.Arg(A, names) OR ~Texts.Arg(A, list) THEN out.String("usage: PNGTest.Write names list"); out.Ln; RETURN END;
+  IF ~Texts.Arg(A, names) OR ~Texts.Arg(A, list) THEN Out.String("usage: PNGTest.Write names list"); Out.Ln; RETURN END;
   f := Files.Old(names);
-  IF f = NIL THEN out.String(names); out.String(" not found"); out.Ln; RETURN END;
+  IF f = NIL THEN Out.String(names); Out.String(" not found"); Out.Ln; RETURN END;
   g := Files.New(list); Files.Set(W, g, 0); Files.Set(R, f, 0);
   WHILE Line(R, name) DO
     IF name # "" THEN

@@ -6,14 +6,14 @@ MODULE PNGPicturesTest;  (* loksh PNGPicturesTest.Run: PNG pictures through Pict
   coarse: an 8 x 8 x 4 cube with components up to 227, and the 16 colours of the system). The
   pictures: basn2c08.png (RGB, dithered), basn3p08.png (a palette of 256 colours). *)
 
-IMPORT Files, Pictures, out, PNG0;
+IMPORT Files, Pictures, Out, PNG0;
 
 VAR checks, failed: LONGINT;
 
 PROCEDURE Check(what: ARRAY OF CHAR; ok: BOOLEAN);
 BEGIN
   INC(checks);
-  IF ~ok THEN INC(failed); out.String("FAIL "); out.String(what); out.Ln END
+  IF ~ok THEN INC(failed); Out.String("FAIL "); Out.String(what); Out.Ln END
 END Check;
 
 PROCEDURE Decode(name: ARRAY OF CHAR): PNG0.Image;
@@ -61,11 +61,11 @@ PROCEDURE Run*;
 VAR d: LONGINT;
 BEGIN
   checks := 0; failed := 0;
-  d := MeanDiff("basn2c08.png"); out.String("basn2c08.png: mean difference "); out.Int(d, 0); out.String(" / 10"); out.Ln;
+  d := MeanDiff("basn2c08.png"); Out.String("basn2c08.png: mean difference "); Out.Int(d, 0); Out.String(" / 10"); Out.Ln;
   Check("Pictures.Open basn2c08.png", (d >= 0) & (d < 200));
-  d := MeanDiff("basn3p08.png"); out.String("basn3p08.png: mean difference "); out.Int(d, 0); out.String(" / 10"); out.Ln;
+  d := MeanDiff("basn3p08.png"); Out.String("basn3p08.png: mean difference "); Out.Int(d, 0); Out.String(" / 10"); Out.Ln;
   Check("Pictures.Open basn3p08.png", (d >= 0) & (d < 200));
-  out.String("PNGPicturesTest: "); out.Int(checks, 0); out.String(" checks, "); out.Int(failed, 0); out.String(" failed"); out.Ln
+  Out.String("PNGPicturesTest: "); Out.Int(checks, 0); Out.String(" checks, "); Out.Int(failed, 0); Out.String(" failed"); Out.Ln
 END Run;
 
 END PNGPicturesTest.
